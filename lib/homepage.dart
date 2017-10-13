@@ -12,49 +12,54 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-  AppLifecycleState _notification;
+  List v2List;
 
-
-  void initState() {
-    super.initState();
-    // WidgetBuilder.instance.addObserver(self);
-
-  }
-
-  void dispose() {
-    // WidgetBuilder.instance.removeObserver(self);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // print('$state');
-    // setState(() { _notification = state; });
-  }
- 
-  // @override
-  // Future<bool> didPushRoute(String route) {
-    // print('$route');
-    // return null;
-  // }
-
-  void _incrementCounter() async {
-    Request req = new Request('http://mmmmmax.cn/list' ,{}, RequestMethod.Get);
+  void _incrementCounter() {
+    Request req = new Request('https://www.v2ex.com/api/topics/latest.json' ,{}, RequestMethod.Get);
     req.start((response) {
-      print(response.bodyBytes);
+      try {
+        List data = JSON.decode(response.body);
+      } catch(e) {
+        print(e);
+      }
+    });
+  }
+
+  void _queryV2List() {
+    if (v2List != null) {
+      return;
+    }
+    Request req = new Request('https://www.v2ex.com/api/topics/latest.json' ,{}, RequestMethod.Get);
+    req.start((response) {
+      try {
+        List data = JSON.decode(response.body);
+        setState(() {
+          v2List = data;
+        });
+      } catch(e) {
+        print(e);
+      }
     });
   }
 
   List<Widget> _getV2Feed() {
     List<Widget> _v2List = <Widget>[];
+    for (var i = 0, len = v2List.length; i < len; ++i) {
+      String t = v2List[i]['title'];
+      Text wid = new Text(t);
+      _v2List.add(wid);
+    }
 
     return _v2List;
   }
 
   @override
   Widget build(BuildContext context) {
+
+    _queryV2List();
+
     return new Scaffold(
         appBar: new AppBar(
           title: new Text(widget.title),
@@ -65,11 +70,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             children: _getV2Feed(),
             ),
           ),
-        floatingActionButton: new FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: new Icon(Icons.add),
-          ), // This trailing comma makes auto-formatting nicer for build methods.
+        // floatingActionButton: new FloatingActionButton(
+          // onPressed: _incrementCounter,
+          // tooltip: 'Increment',
+          // child: new Icon(Icons.add),
+          // ), // This trailing comma makes auto-formatting nicer for build methods.
         );
   }
 }
