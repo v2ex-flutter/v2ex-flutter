@@ -17,25 +17,48 @@ class _ContentItem extends StatelessWidget {
   String _content;
 
   _ContentItem(this._author, this._content);
-
   @override
   Widget build(BuildContext context) {
-    return new Container(
-        margin: const EdgeInsets.only(top: 5.0),
-        color: Colors.red[300],
-        child: new Padding(
-          padding: new EdgeInsets.all(8.0),
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              new Text(_author),
-              new Text(_content),
-            ]
+    return new GestureDetector(
+        onTap: () {
+          // debugPrint(Navigator);
+          Navigator.of(context).pushNamed('/a');
+        },
+        child: new Container(
+          margin: const EdgeInsets.only(top: 5.0),
+          color: Colors.red[300],
+          child: new Padding(
+            padding: new EdgeInsets.all(8.0),
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                new Text(_author),
+                new Text(_content),
+              ]
+              )
             )
           )
         );
-
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+    // return new Container(
+        // margin: const EdgeInsets.only(top: 5.0),
+        // color: Colors.red[300],
+        // child: new Padding(
+          // padding: new EdgeInsets.all(8.0),
+          // child: new Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            // children: [
+              // new Text(_author),
+              // new Text(_content),
+            // ]
+            // )
+          // )
+        // );
+
+  // }
 }
 class _ContentView  extends StatelessWidget {
   List<Widget> _list = <Widget>[];
