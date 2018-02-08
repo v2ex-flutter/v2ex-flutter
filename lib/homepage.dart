@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'request.dart';
 import 'dart:convert';
+import 'v2_request.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -21,8 +21,11 @@ class _ContentItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return new GestureDetector(
         onTap: () {
-          // debugPrint(Navigator);
-          Navigator.of(context).pushNamed('/a');
+          // Navigator.of(context).pushNamed('/a');
+          V2Request request = new V2Request();
+          request.getLoginInfo((response) {
+            print(response);
+          });
         },
         child: new Container(
           margin: const EdgeInsets.only(top: 5.0),
@@ -40,25 +43,6 @@ class _ContentItem extends StatelessWidget {
           )
         );
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-    // return new Container(
-        // margin: const EdgeInsets.only(top: 5.0),
-        // color: Colors.red[300],
-        // child: new Padding(
-          // padding: new EdgeInsets.all(8.0),
-          // child: new Column(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            // children: [
-              // new Text(_author),
-              // new Text(_content),
-            // ]
-            // )
-          // )
-        // );
-
-  // }
 }
 class _ContentView  extends StatelessWidget {
   List<Widget> _list = <Widget>[];
