@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'request.dart';
+import '../utils/request.dart';
 import 'dart:convert';
-import 'v2_request.dart';
+import '../utils/v2_request.dart';
+import 'detail.dart';
+import 'login.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -13,19 +15,33 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _ContentItem extends StatelessWidget {
-  String _author;
-  String _content;
+  final String _author;
+  final String _content;
 
   _ContentItem(this._author, this._content);
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
         onTap: () {
-          // Navigator.of(context).pushNamed('/a');
-          V2Request request = new V2Request();
-          request.getLoginInfo((response) {
-            print(response);
-          });
+          Navigator.of(context).push(new PageRouteBuilder(
+                opaque: false,
+                pageBuilder: (BuildContext context, _, __) {
+                  return new LoginPage();
+                },
+                transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+                  return new FadeTransition(
+                      opacity: animation,
+                      child: new RotationTransition(
+                        turns: new Tween<double>(begin: 0.5, end: 1.0).animate(animation),
+                        child: child,
+                        ),
+                      );
+                }
+ ));
+          // V2Request request = new V2Request();
+          // request.getLoginInfo((response) {
+            // print(response);
+          // });
         },
         child: new Container(
           margin: const EdgeInsets.only(top: 5.0),
@@ -44,8 +60,9 @@ class _ContentItem extends StatelessWidget {
         );
   }
 }
+
 class _ContentView  extends StatelessWidget {
-  List<Widget> _list = <Widget>[];
+  final List<Widget> _list;
 
   _ContentView(this._list);
 
@@ -73,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
     req.start((response) {
       try {
         List data = JSON.decode(response.body);
-        print(data);
         setState(() {
           v2List = data;
         });
