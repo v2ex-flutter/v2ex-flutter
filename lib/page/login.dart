@@ -21,11 +21,8 @@ class _LoginPageState extends State<LoginPage> {
     req.getLoginInfo((resp) {
       setState(() {
         imgUrl = resp['authImg'];
-        // print(imgUrl);
         Request reqq = new Request('https://www.v2ex.com/_captcha?once=43930', {}, RequestMethod.Get);
         reqq.start((resp1) {
-          print(111);
-          print(resp1.body);
         });
       });
       

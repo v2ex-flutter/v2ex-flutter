@@ -1,6 +1,7 @@
 import 'request.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
+import 'package:flutter/material.dart';
 
 typedef void FunctionMap(Map map);
 
@@ -24,6 +25,7 @@ class V2Request {
         Document document = parse(response.body);
         Map ret = new Map();
         // Get auth image.
+        debugPrint(response.body);
         Node imgNode = document.getElementsByClassName('sep10')[0].previousElementSibling;
         String styleUrl = imgNode.attributes['style'];
         String regStr = r"url\(\'.*\'\)";
@@ -39,7 +41,6 @@ class V2Request {
         ret['authImg'] = imgUrl; 
         callback(ret);
       } catch (e) {
-        print(1);
         print(e);
       }
     });
