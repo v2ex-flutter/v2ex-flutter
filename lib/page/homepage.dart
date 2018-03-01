@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/request.dart';
 import 'dart:convert';
-import '../utils/v2_request.dart';
-import 'detail.dart';
 import 'login.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -37,27 +35,23 @@ class _ContentItem extends StatelessWidget {
                         ),
                       );
                 }
- ));
-          // V2Request request = new V2Request();
-          // request.getLoginInfo((response) {
-            // print(response);
-          // });
+                ));
         },
         child: new Container(
-          margin: const EdgeInsets.only(top: 5.0),
-          color: Colors.red[300],
-          child: new Padding(
-            padding: new EdgeInsets.all(8.0),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                new Text(_author),
-                new Text(_content),
-              ]
-              )
-            )
-          )
-        );
+                 margin: const EdgeInsets.only(top: 5.0),
+                 color: Colors.red[300],
+                 child: new Padding(
+                   padding: new EdgeInsets.all(8.0),
+                   child: new Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: [
+                       new Text(_author),
+                       new Text(_content),
+                     ]
+                     )
+                   )
+                 )
+          );
   }
 }
 
@@ -101,11 +95,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Widget> _getV2Feed() {
     List<Widget> _v2List = <Widget>[];
-    for (var i = 0, len = v2List.length; i < len; ++i) {
-      String author = v2List[i]['member']['username'];
-      String content = v2List[i]['title'];
-      _ContentItem item = new _ContentItem(author, content);
-      _v2List.add(item);
+    if (v2List != null) {
+      for (var i = 0, len = v2List.length; i < len; ++i) {
+        String author = v2List[i]['member']['username'];
+        String content = v2List[i]['title'];
+        _ContentItem item = new _ContentItem(author, content);
+        _v2List.add(item);
+      }
     }
     return _v2List;
   }

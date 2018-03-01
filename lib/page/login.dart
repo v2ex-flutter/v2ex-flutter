@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import '../utils/v2_request.dart';
 import '../utils/request.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'dart:async';
+import 'dart:typed_data';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,19 +18,45 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _authController = new TextEditingController();
 
   String imgUrl;
+  File file;
+  bool finishedLoadImg;
+
+  Future<File> _getLocalFile() async {
+    // get the path to the document directory.
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    return new File('$dir/verify.png');
+  }
+
+  Future<int> _writeByteString(Uint8List content) async {
+    try {
+      file = await _getLocalFile();
+      // read the variable as a string from the file.
+      file.writeAsBytes(content);
+      return 1;
+    } on FileSystemException {
+      return 0;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    finishedLoadImg = false;
+
     V2Request req = new V2Request();
     req.getLoginInfo((resp) {
-      setState(() {
-        imgUrl = resp['authImg'];
-        Request reqq = new Request('https://www.v2ex.com/_captcha?once=43930', {}, RequestMethod.Get);
-        reqq.start((resp1) {
+      imgUrl = resp['authImg'];
+      Request reqq = new Request(imgUrl, {}, RequestMethod.ReadBytes);
+      reqq.start((list) {
+        _writeByteString(list).then((int i){
+          setState(() {
+            finishedLoadImg = true;
+          });
         });
       });
-      
+      setState(() {
+      });
+
     });
   }
 
@@ -52,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                   hintText: 'Input password',
                   ),
                 ),
-              new _AuthCodeState(_authController, imgUrl),
+              new _AuthCodeState(_authController, imgUrl, file, finishedLoadImg),
             ]
             )
           ),
@@ -63,12 +94,21 @@ class _LoginPageState extends State<LoginPage> {
 class _AuthCodeState extends StatelessWidget {
   final TextEditingController controller;
   final String imgUrl;
+  final File file;
+  final bool canload;
 
-  _AuthCodeState(this.controller, this.imgUrl);
+
+  _AuthCodeState(this.controller, this.imgUrl, this.file, this.canload);
+
+  Widget _getAuthImage() {
+    if (canload) {
+      return new Image.file(file);
+    }
+    return new Container();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // print(imgUrl);
     return new Container(
         // height: 100.0,
         color: new Color.fromRGBO(100,100,100, 0.5),
@@ -79,18 +119,12 @@ class _AuthCodeState extends StatelessWidget {
             new TextField(
               controller: controller,
               decoration: new InputDecoration(
-                hintText: imgUrl,
+                icon: new Icon(Icons.print),
+                hintText: "验证码",
+                fillColor: new Color.fromRGBO(100, 100, 100, 1.0),
                 )
               ),
-            new Image.asset('images/_captcha.png'),
-            // new Image.network(
-              // 'imgUrl',
-              // // 'https://www.v2ex.com/_captcha?once=43930',
-              // // 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2010939026,1883625057&fm=27&gp=0.jpg',
-              // width: 54.0,
-              // height: 54.0,
-              // color: new Color.fromRGBO(100,100,100, 0.5),
-              // ),
+            _getAuthImage(),
           ]
           )
         );

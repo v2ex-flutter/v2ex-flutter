@@ -25,7 +25,6 @@ class V2Request {
         Document document = parse(response.body);
         Map ret = new Map();
         // Get auth image.
-        debugPrint(response.body);
         Node imgNode = document.getElementsByClassName('sep10')[0].previousElementSibling;
         String styleUrl = imgNode.attributes['style'];
         String regStr = r"url\(\'.*\'\)";
