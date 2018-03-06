@@ -6,7 +6,6 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:typed_data';
 
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => new _LoginPageState();
@@ -19,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
 
   String imgUrl;
   File file;
-  bool finishedLoadImg;
+  bool finishedLoadImg = false;
 
   Future<File> _getLocalFile() async {
     // get the path to the document directory.
@@ -38,10 +37,20 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _onPressLogin() {
+    print('login');
+
+  }
+
+  void _onPressRegister() {
+
+    print('register');
+  }
+  
+
   @override
   void initState() {
     super.initState();
-    finishedLoadImg = false;
 
     V2Request req = new V2Request();
     req.getLoginInfo((resp) {
@@ -74,16 +83,19 @@ class _LoginPageState extends State<LoginPage> {
               new TextField(
                 controller: _userController,
                 decoration: new InputDecoration(
-                  hintText: 'Input user name',
+                  hintText: '用户名',
+                  icon: new Icon(Icons.verified_user),
                   ),
                 ),
               new TextField(
                 controller: _passwdController,
                 decoration: new InputDecoration(
-                  hintText: 'Input password',
+                  hintText: '密码',
+                  icon: new Icon(Icons.security),
                   ),
                 ),
               new _AuthCodeState(_authController, imgUrl, file, finishedLoadImg),
+              new _ConfirmState(_onPressLogin, _onPressRegister),
             ]
             )
           ),
@@ -97,12 +109,16 @@ class _AuthCodeState extends StatelessWidget {
   final File file;
   final bool canload;
 
-
   _AuthCodeState(this.controller, this.imgUrl, this.file, this.canload);
 
   Widget _getAuthImage() {
     if (canload) {
-      return new Image.file(file);
+      return new Image.file(
+          file,
+          width: 100.0, 
+          height: 40.0,
+          // height: 100.0,
+          );
     }
     return new Container();
   }
@@ -110,23 +126,56 @@ class _AuthCodeState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        // height: 100.0,
-        color: new Color.fromRGBO(100,100,100, 0.5),
-        // padding: const EdgeInsets.all(32.0),
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        height: 50.0,
+        // width: 100.0,
+        child:
+        new Row(
+          mainAxisAlignment: MainAxisAlignment.start, 
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            new TextField(
-              controller: controller,
-              decoration: new InputDecoration(
-                icon: new Icon(Icons.print),
-                hintText: "验证码",
-                fillColor: new Color.fromRGBO(100, 100, 100, 1.0),
-                )
+            new Container(
+              width: 230.0,
+              height: 100.0,
+              child: new TextField(
+                controller: controller,
+                decoration: new InputDecoration(
+                  icon: new Icon(Icons.autorenew),
+                  hintText: "验证码",
+                  fillColor: new Color.fromRGBO(100, 100, 100, 1.0),
+                  )),
               ),
             _getAuthImage(),
-          ]
-          )
+        ]));
+  }
+}
+
+class _ConfirmState extends StatelessWidget {
+  final Function _loginAction;
+  final Function _registerAction;
+
+  _ConfirmState(this._loginAction, this._registerAction);
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+        height: 100.0,
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center, 
+          children: [
+            new Container(
+              padding: const EdgeInsets.only(right: 50.0),
+              child: new RaisedButton(
+                child: new Text('登录'),
+                onPressed: _loginAction,
+                ),
+              ),
+            new RaisedButton(
+              child: new Text('注册'),
+              onPressed: _registerAction,
+              ),
+          ],
+          ),
         );
   }
+
 }

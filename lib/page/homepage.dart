@@ -26,15 +26,15 @@ class _ContentItem extends StatelessWidget {
                 pageBuilder: (BuildContext context, _, __) {
                   return new LoginPage();
                 },
-                transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
-                  return new FadeTransition(
-                      opacity: animation,
-                      child: new RotationTransition(
-                        turns: new Tween<double>(begin: 0.5, end: 1.0).animate(animation),
-                        child: child,
-                        ),
-                      );
-                }
+                // transitionsBuilder: (_, Animation<double> animation, __, Widget child) {
+                  // return new FadeTransition(
+                      // opacity: animation,
+                      // child: new RotationTransition(
+                        // turns: new Tween<double>(begin: 0.5, end: 1.0).animate(animation),
+                        // child: child,
+                        // ),
+                      // );
+                // }
                 ));
         },
         child: new Container(
@@ -46,6 +46,11 @@ class _ContentItem extends StatelessWidget {
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: [
                        new Text(_author),
+
+                       new Text(
+                         'No, we need bold strokes. We need this plan.',
+                         style: new TextStyle(fontWeight: FontWeight.bold),
+                         ),
                        new Text(_content),
                      ]
                      )
