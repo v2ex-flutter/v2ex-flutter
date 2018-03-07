@@ -2,6 +2,11 @@ import 'request.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:html/dom.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
+import 'package:crypto/crypto.dart';
+import 'dart:convert'; // for the UTF8.encode method
+import 'cookie.dart';
+
 
 typedef void FunctionMap(Map map);
 
@@ -24,8 +29,18 @@ class V2Request {
       try {
         Document document = parse(response.body);
         Map ret = new Map();
+        List keyList = document.getElementsByClassName('sl');
+        if (keyList.length < 3) {
+          ret['statusCode'] = 500;
+          ret['statusMsg'] = 'Wrong format!';
+          callback(ret);
+          return;
+        }
+        ret['name'] = keyList[0].attributes['name'];
+        ret['passwd'] = keyList[1].attributes['name'];
+        ret['auth'] = keyList[2].attributes['name'];
         // Get auth image.
-        Node imgNode = document.getElementsByClassName('sep10')[0].previousElementSibling;
+        Node imgNode = keyList[2].parentNode.parentNode.previousElementSibling.children[0].children[0];
         String styleUrl = imgNode.attributes['style'];
         String regStr = r"url\(\'.*\'\)";
         RegExp reg = new RegExp(regStr);
@@ -38,6 +53,8 @@ class V2Request {
         });
 
         ret['authImg'] = imgUrl; 
+        ret['imgName'] = sha1.convert(UTF8.encode(imgUrl)).toString();
+        print(ret);
         callback(ret);
       } catch (e) {
         print(e);

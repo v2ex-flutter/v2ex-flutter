@@ -5,6 +5,7 @@ dependencies:
   html: any
   http: '>=0.11.3+12'
   path_provider: any
+  crypto: any
   flutter:
     sdk: flutter
 

@@ -20,15 +20,15 @@ class _LoginPageState extends State<LoginPage> {
   File file;
   bool finishedLoadImg = false;
 
-  Future<File> _getLocalFile() async {
+  Future<File> _getLocalFile(String fileName) async {
     // get the path to the document directory.
     String dir = (await getApplicationDocumentsDirectory()).path;
-    return new File('$dir/verify.png');
+    return new File('$dir/$fileName');
   }
 
-  Future<int> _writeByteString(Uint8List content) async {
+  Future<int> _writeByteString(Uint8List content, String fileName) async {
     try {
-      file = await _getLocalFile();
+      file = await _getLocalFile(fileName);
       // read the variable as a string from the file.
       file.writeAsBytes(content);
       return 1;
@@ -39,25 +39,21 @@ class _LoginPageState extends State<LoginPage> {
 
   void _onPressLogin() {
     print('login');
-
   }
 
   void _onPressRegister() {
-
     print('register');
   }
   
-
-  @override
-  void initState() {
-    super.initState();
-
+  void _requestAuthCode() {
+    finishedLoadImg = false;
+    file = null;
     V2Request req = new V2Request();
     req.getLoginInfo((resp) {
       imgUrl = resp['authImg'];
       Request reqq = new Request(imgUrl, {}, RequestMethod.ReadBytes);
       reqq.start((list) {
-        _writeByteString(list).then((int i){
+        _writeByteString(list, resp['imgName']).then((int i){
           setState(() {
             finishedLoadImg = true;
           });
@@ -68,6 +64,17 @@ class _LoginPageState extends State<LoginPage> {
 
     });
   }
+
+  void _onPressReload() {
+    _requestAuthCode();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _requestAuthCode();
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                   icon: new Icon(Icons.security),
                   ),
                 ),
-              new _AuthCodeState(_authController, imgUrl, file, finishedLoadImg),
+              new _AuthCodeState(_authController, imgUrl, file, finishedLoadImg, _onPressReload),
               new _ConfirmState(_onPressLogin, _onPressRegister),
             ]
             )
@@ -108,16 +115,20 @@ class _AuthCodeState extends StatelessWidget {
   final String imgUrl;
   final File file;
   final bool canload;
+  final Function tapAuthCodeAction;
 
-  _AuthCodeState(this.controller, this.imgUrl, this.file, this.canload);
+  _AuthCodeState(this.controller, this.imgUrl, this.file, this.canload, this.tapAuthCodeAction);
 
   Widget _getAuthImage() {
     if (canload) {
-      return new Image.file(
-          file,
-          width: 100.0, 
-          height: 40.0,
-          // height: 100.0,
+      print(file);
+      return new GestureDetector(
+          child: new Image.file(
+            file,
+            width: 100.0, 
+            height: 40.0,
+            ),
+          onTap: tapAuthCodeAction,
           );
     }
     return new Container();
@@ -127,7 +138,6 @@ class _AuthCodeState extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
         height: 50.0,
-        // width: 100.0,
         child:
         new Row(
           mainAxisAlignment: MainAxisAlignment.start, 
