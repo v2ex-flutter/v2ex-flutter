@@ -1,21 +1,32 @@
 PODS:
   - Flutter (1.0.0)
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
   - path_provider (0.0.1):
     - Flutter
+  - sqflite (0.0.1):
+    - Flutter
+    - FMDB
 
 DEPENDENCIES:
   - Flutter (from `Pods/.symlinks/flutter/ios`)
-  - path_provider (from `Pods/.symlinks/plugins/path_provider-0.3.1/ios`)
+  - path_provider (from `Pods/.symlinks/plugins/path_provider-0.4.0/ios`)
+  - sqflite (from `Pods/.symlinks/plugins/sqflite-0.8.2/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Pods/.symlinks/flutter/ios
   path_provider:
-    :path: Pods/.symlinks/plugins/path_provider-0.3.1/ios
+    :path: Pods/.symlinks/plugins/path_provider-0.4.0/ios
+  sqflite:
+    :path: Pods/.symlinks/plugins/sqflite-0.8.2/ios
 
 SPEC CHECKSUMS:
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  sqflite: 8e2d9fe1e7cdc95d4d537fc7eb2d23c8dc428e3c
 
 PODFILE CHECKSUM: 793ca17cc5488c2bdeb7f2f95b973a070492cf02
 

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'dart:typed_data';
+import '../utils/cookie.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -73,8 +74,32 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _requestAuthCode();
+    _callCookie();
+    temppp();
+  }
+
+  Future asyncSleep() async{
+    await sleep(new Duration(seconds: 5));
+  }
+  void temppp() {
+    print('time1');
+    asyncSleep();
+    print('time2');
+    asyncSleep();
+    print('time3');
   }
   
+  _callCookie() async{
+    Cookie cookie = Cookie.shareInstance();
+    print(cookie);
+    await cookie.setCookie('v2ex', '333333', 'value111');
+    await cookie.setCookie('v2ex', '333333', 'value111');
+    await cookie.setCookie('v2ex', '333333', 'value111');
+    await cookie.setCookie('v2ex', '333333', 'value111');
+    await cookie.setCookie('v2ex', '333333', 'value111');
+    // List coo = await cookie.getCookie('http://v2ex.com');
+    // print(coo);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +146,6 @@ class _AuthCodeState extends StatelessWidget {
 
   Widget _getAuthImage() {
     if (canload) {
-      print(file);
       return new GestureDetector(
           child: new Image.file(
             file,

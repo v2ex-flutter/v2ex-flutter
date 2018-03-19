@@ -54,10 +54,8 @@ class V2Request {
 
         ret['authImg'] = imgUrl; 
         ret['imgName'] = sha1.convert(UTF8.encode(imgUrl)).toString();
-        print(ret);
         callback(ret);
       } catch (e) {
-        print(e);
       }
     });
   }

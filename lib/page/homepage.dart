@@ -93,7 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
           v2List = data;
         });
       } catch(e) {
-        print(e);
       }
     });
   }
