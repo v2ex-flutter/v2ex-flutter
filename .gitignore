@@ -2,6 +2,7 @@
 
 # Files and directories created by pub
 .packages
+.DS_Store
 .idea/
 .pub/
 build/
